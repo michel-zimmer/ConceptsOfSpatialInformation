@@ -63,5 +63,34 @@ class CoreConceptsTest(unittest.TestCase):
         print "TODO: test objects"
         assert False
         
+    def testArcShpObjects(self):
+        """ Import 2 ArcMap shapefiles and test core concept functions """
+
+        #Get objects from shapefiles
+        shapefile1 = "data/objects/Rooftops.shp"
+        shapefile2 = "data/objects/ViablePVArea.shp"
+        layer_src1 = ogr.Open(shapefile1)
+        layer_src2 = ogr.Open(shapefile2)
+        lyr1 = layer_src1.GetLayer(0)
+        lyr2 = layer_src2.GetLayer(0)
+        roofObj = lyr1.GetFeature(0)
+        pvObj = lyr2.GetFeature(236)
+
+        #test getBounds on roof object - Poultry Science building
+        print "\nTest shapefile objects - getBounds for CalPoly roof"
+        roofBounds = ArcShpObjects.getBounds(roofObj)
+        roofBounds = (round(roofBounds[0],2),round(roofBounds[1],2),round(roofBounds[2],2),round(roofBounds[3],2))
+        print "\nBounding box coordinates, UTM Zone 10N, in form (MinX, MaxX, MinY, MaxY):\n",roofBounds,"\n"
+        self.assertEqual(roofBounds, (710915.55, 710983.25, 3910040.96, 3910095.28))
+        
+        #test hasRelation for PV object within roof object
+        rel = ArcShpObjects.hasRelation(pvObj,roofObj,'Within')
+        self.assertEqual(rel,True)
+        
+        #test getProprty for Poultry Science building name
+        roofName = ArcShpObjects.getProperty(roofObj, 'name')
+        self.assertEqual(roofName,"Poultry Science")
+
+        
 if __name__ == '__main__':
     unittest.main()
