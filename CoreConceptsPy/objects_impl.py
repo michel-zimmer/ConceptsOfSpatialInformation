@@ -34,7 +34,7 @@ class ArcShpObjects(AObjects):
         index = obj.GetFieldIndex(prop)
         propDefn = obj.GetDefnRef()
         propType = propDefn.GetType()
-        #Return value as a propType
+        #Return value as propType
         if propType == "OFTInteger":
             value = obj.GetFieldAsInteger(index)
         elif propType == "OFTReal":
