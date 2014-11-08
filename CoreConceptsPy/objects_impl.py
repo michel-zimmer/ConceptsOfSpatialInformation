@@ -32,6 +32,19 @@ class ArcShpObjects(AObjects):
     def getProperty (obj, prop):
         #Get index of property - note: index 13 is building name
         index = obj.GetFieldIndex(prop)
-        #Return value as a string
-        value = obj.GetFieldAsString(index)
+        propDefn = obj.GetDefnRef()
+        propType = propDefn.GetType()
+        #Return value as propType
+        if propType == "OFTInteger":
+            value = obj.GetFieldAsInteger(index)
+        elif propType == "OFTReal":
+            value = obj.GetFieldAsDouble(index)
+        elif propType == "OFTString":
+            value = obj.GetFieldAsString(index)
+        elif propType == "OFTBinary":
+            value = obj.GetFieldAsBinary(index)
+        elif propType == "OFTDateTime":
+            value = obj.GetFieldAsDateTime(index)
+        else:
+            value = obj.GetFieldAsString(index)
         return value
