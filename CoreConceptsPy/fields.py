@@ -57,13 +57,11 @@ class GeoTiffField(CcField):
     Worboys, Michael, and Matt Duckham. GIS : a computing perspective. Boca Raton, Fla: CRC Press, 2004. Print.
 
     """
-    def __init__( self, filepath, geometry, operation ):
+    def __init__( self, filepath):
         """
         @param filepath path to the GeoTiff field
-        @param geometry domain of the field 
-        @param operation 'inside' or 'outside' 
         """
-        assert operation in ['inside','outside']
+        # assert operation in ['inside','outside']
         self.gField = gdal.Open( filepath, GA_Update )
         # set the initial domain of the field
         # TODO: add the geometry to the domain_geoms tuple

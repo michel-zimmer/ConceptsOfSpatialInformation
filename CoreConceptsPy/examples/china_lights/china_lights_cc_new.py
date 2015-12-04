@@ -7,7 +7,8 @@ import random
 sys.path = [ '.', '..', '../..', '../../..' ] + sys.path
 
 ######### THIS IS ALL PSEUDO-CODE ############
-from CoreConceptsPy.coreconcepts import CcField
+from CoreConceptsPy.fields import GeoTiffField
+from CoreConceptsPy.objects import ArcShpObject, ArcShpObjectSet
 
 # setting up our initial data [load, average, restrict domain, remove]
 def part_1():
@@ -18,13 +19,15 @@ def part_1():
     file_path_4 = 'data/china.shp'
 
     # create fields from file path
-    china_field_a = CcField(file_path_1)
+    china_field_a = GeoTiffField(file_path_1)
+    print china_field_a
 
-    china_field_b = CcField(file_path_2)
+    china_field_b = GeoTiffField(file_path_2)
+    print china_field_b
 
-#     # create objects from file path
-#     china_flares = CcObject(file_path_3)
-#     china = CcObject(file_path_4)
+    # create objects from file path
+    china_flares = ArcShpObjectSet(file_path_3)
+    china = ArcShpObject(file_path_4)
 #
 #     # perform local averaging operation
 #     luminosity = china_field_a.local(china_field_b, average)

@@ -49,8 +49,9 @@ class CcField(object):
     Based on Field.hs
     """
 
-    def __init__(self):
+    def __init__(self, filepath):
         """ Define appropriate parameters for construction of the concrete object """
+        _determine_type(self, filepath)
         pass
 
     def value_at( self, position ):

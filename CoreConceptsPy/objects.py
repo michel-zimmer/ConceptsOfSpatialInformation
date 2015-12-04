@@ -17,8 +17,8 @@ __status__ = "Development"
 
 import ogr
 
-from utils import _init_log
-from coreconcepts import CcObject
+from utils import _init_log, _determine_object_index
+from coreconcepts import CcObject, CcObjectSet
 
 log = _init_log("objects")
 
@@ -26,10 +26,11 @@ class ArcShpObject(CcObject):
     """
     Subclass of Abstract Object (CcObject) in the ArcMap Shapefile format
     """
-    def __init__( self, filepath, objIndex ):
+    def __init__( self, filepath ):
+
         shpfile =  ogr.Open(filepath)
         layer = shpfile.GetLayer(0)
-        self.sObj = layer.GetFeature(objIndex)
+        self.sObj =  layer.GetFeature(_determine_object_index(layer.GetFeatureCount())) # TODO: change logic of num features
 
     def bounds( self ):
         #Get geometery
@@ -73,7 +74,14 @@ class ArcShpObject(CcObject):
             return True
         else:
             return False
-        
-    class ArcShpObjectSet(CcObjectSet):
-        def __init__( self, shp_filepath, objIndex ):
-            # TODO: load the objects from the shapefile and add them to self.obj_set
+
+
+class ArcShpObjectSet(CcObjectSet):
+    def __init__( self, filepath ):
+        # TODO: load the objects from the shapefile and add them to self.sObj_set
+        shpfile =  ogr.Open(filepath)
+        layer = shpfile.GetLayer(0) #RETURN HERE
+        # for all featuers, add to object set
+        self.sObj_set = layer.GetFeature( _determine_object_index(layer.GetFeatureCount()) ) # TODO: change logic of num features
+
+        pass
