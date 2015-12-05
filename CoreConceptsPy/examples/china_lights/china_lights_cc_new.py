@@ -19,7 +19,7 @@ def part_1():
     file_path_4 = 'data/china.shp'
 
     # create fields from file path
-    china_field_a = GeoTiffField(file_path_1)
+    china_field_a = GeoTiffField(file_path_1) # TODO: replace with CcField(field_path_1) # can we create a subclass through abstract class via filepath string
     print china_field_a
 
     china_field_b = GeoTiffField(file_path_2)

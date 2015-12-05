@@ -31,6 +31,8 @@ class ArcShpObject(CcObject):
         shpfile =  ogr.Open(filepath)
         layer = shpfile.GetLayer(0)
         self.sObj =  layer.GetFeature(_determine_object_index(layer.GetFeatureCount())) # TODO: change logic of num features
+        print "sObj"
+        print self.sObj
 
     def bounds( self ):
         #Get geometery
@@ -78,10 +80,10 @@ class ArcShpObject(CcObject):
 
 class ArcShpObjectSet(CcObjectSet):
     def __init__( self, filepath ):
-        # TODO: load the objects from the shapefile and add them to self.sObj_set
         shpfile =  ogr.Open(filepath)
-        layer = shpfile.GetLayer(0) #RETURN HERE
+        layer = shpfile.GetLayer(0)
         # for all featuers, add to object set
-        self.sObj_set = layer.GetFeature( _determine_object_index(layer.GetFeatureCount()) ) # TODO: change logic of num features
-
+        #for i in range(layer.GetFeatureCount()):
+        self.sObj_set = layer.GetNextFeature() # TODO: change logic of num features
+        x = layer.GetFeature(0)
         pass

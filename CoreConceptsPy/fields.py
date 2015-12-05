@@ -57,7 +57,7 @@ class GeoTiffField(CcField):
     Worboys, Michael, and Matt Duckham. GIS : a computing perspective. Boca Raton, Fla: CRC Press, 2004. Print.
 
     """
-    def __init__( self, filepath):
+    def __init__( self, filepath ):
         """
         @param filepath path to the GeoTiff field
         """

@@ -158,9 +158,9 @@ def float_eq( a, b, err=1e-08):
     """
     return abs(a - b) <= err
 
-# def _determine_type(self, filepath):
-#     if filepath.endswith('.tiff'):
-#         GeoTiffField(self, filepath)
+def _determine_type(self, filepath):
+    if filepath.endswith('.tiff'):
+        GeoTiffField(self, filepath) #create a new GeoTiffField object
 
 def _determine_object_index(num_features):
     if num_features == 1: # Creating an object from one feature
