@@ -18,22 +18,24 @@ def part_1():
     file_path_3 = 'data/china_flares.shp'
     file_path_4 = 'data/china.shp'
 
+    # create objects from file path
+
+    china = ArcShpObject(file_path_4)
+    print china
+
+    china_flares = ArcShpObjectSet(file_path_3)
+    print china_flares
+
     # create fields from file path
-    china_field_a = GeoTiffField(file_path_1) # TODO: replace with CcField(field_path_1) # can we create a subclass through abstract class via filepath string
+    china_field_a = GeoTiffField(file_path_1).restrict_domain(china, 'inside')
     print china_field_a
 
     china_field_b = GeoTiffField(file_path_2)
     print china_field_b
 
-    # create objects from file path
-    china_flares = ArcShpObjectSet(file_path_3)
-    china = ArcShpObject(file_path_4)
 #
 #     # perform local averaging operation
 #     luminosity = china_field_a.local(china_field_b, average)
-#     # TODO: fields = [file_path_1, file_path_2, file_path_3, file_path_4]
-#     # TODO: new_field = average(fields, local) # ? another argument that allows users to 'use lenses' to look at the inputs the way the user wants (determine type)
-#     # TODO: what are you doing? you are taking an average (doing something), and then defining how to do it (local)
 #
 #     # remove gas flares
 #     luminosity.remove(china_flares)

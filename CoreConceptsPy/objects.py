@@ -28,11 +28,9 @@ class ArcShpObject(CcObject):
     """
     def __init__( self, filepath ):
 
-        shpfile =  ogr.Open(filepath)
+        shpfile = ogr.Open(filepath)
         layer = shpfile.GetLayer(0)
-        self.sObj =  layer.GetFeature(_determine_object_index(layer.GetFeatureCount())) # TODO: change logic of num features
-        print "sObj"
-        print self.sObj
+        self.sObj = layer.GetNextFeature()
 
     def bounds( self ):
         #Get geometery
@@ -40,6 +38,9 @@ class ArcShpObject(CcObject):
         env = geom.GetEnvelope()
         #Return bounds in form (MinX, MaxX, MinY, MaxY)
         return env
+        #Return geometry
+
+        #return geom #,geom UNCOMMENT THIS!
 
     def relation( self, obj, relType ):
         #Get geometeries
@@ -77,13 +78,9 @@ class ArcShpObject(CcObject):
         else:
             return False
 
-
 class ArcShpObjectSet(CcObjectSet):
     def __init__( self, filepath ):
-        shpfile =  ogr.Open(filepath)
+        shpfile = ogr.Open(filepath)
         layer = shpfile.GetLayer(0)
-        # for all featuers, add to object set
-        #for i in range(layer.GetFeatureCount()):
-        self.sObj_set = layer.GetNextFeature() # TODO: change logic of num features
-        x = layer.GetFeature(0)
+        self.sObj_set = layer.GetNextFeature()
         pass

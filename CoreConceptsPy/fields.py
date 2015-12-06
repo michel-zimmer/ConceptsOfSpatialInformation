@@ -22,6 +22,7 @@ from gdalconst import *
 
 from utils import _init_log
 from coreconcepts import CcField
+import abc
 
 log = _init_log("fields")
 
@@ -58,13 +59,24 @@ class GeoTiffField(CcField):
 
     """
     def __init__( self, filepath ):
+
         """
         @param filepath path to the GeoTiff field
         """
         # assert operation in ['inside','outside']
-        self.gField = gdal.Open( filepath, GA_Update )
-        # set the initial domain of the field
-        # TODO: add the geometry to the domain_geoms tuple
+        self.gField = gdal.Open( filepath, GA_Update ) # open file via gdal
+        if self.gField is None:
+            print "error: gField is none"
+
+
+        print 'Driver: ', self.gField.GetDriver().ShortName,'/', \
+              self.gField.GetDriver().LongName
+        print 'Size is ',self.gField.RasterXSize,'x',self.gField.RasterYSize, \
+              'x',self.gField.RasterCount
+        print 'Projection is ',self.gField.GetProjection()
+        thing =  self.gField.ReadAsArray()
+        print thing
+
         self.domain_geoms = () # tuple [geometry, 'inside'|'outside']
 
     def value_at( self, position ):
@@ -79,11 +91,23 @@ class GeoTiffField(CcField):
             array = self.gField.ReadAsArray( offset[1],offset[0], 1,1 ) #Convert image to NumPy array
             return array
         else: return None
-    
+
+    def domain(self):
+        # TODO: implement
+        raise NotImplementedError("domain")
+
+    def restrict_domain(self, geometry, operation ): # TODO: maybe call this limit_to ? (does that seem more intuitive?)
+        print "IN RESTRICT DOMAIN", geometry
+        print geometry.bounds() #prints env
+
+        # add [geometry,operation] to self.domain_geoms
+
+        pass
+
     def _is_in_domain(self, position ):
         """
-        @param position 
-        @return True if position is in the current domain or False otherwise 
+        @param position
+        @return True if position is in the current domain or False otherwise
         """
         # TODO: implement using self.domain_geoms
 
@@ -98,7 +122,7 @@ class GeoTiffField(CcField):
         maskArray = ma.masked_not_equal( array, val )  #All values not equal to zone value of input are masked
         return maskArray
 
-    def local( self, fields, func, newGtiffPath ):
+    def local( self, fields, localFunc, newGtiffPath ):
         """
         Assign a new value to each pixel in gtiff based on func. Return a new GeoTiff at newGtiffPath.
 
@@ -112,12 +136,12 @@ class GeoTiffField(CcField):
         1. For each location x, h(x) = f(x) dot g(x)" (Worboys & Duckham 148)
 
         @param fields - other input fields 
-        @param func - the local function to be applied to each value in GeoTiff
+        @param localFunc - the local function to be applied to each value in GeoTiff
         @param newGtiffPath - file path for the new GeoTiff
         @return N/A; write new raster to newGtiffPath
         """
         oldArray = self.gField.ReadAsArray()
-        newArray = func(oldArray)
+        newArray = localFunc(oldArray)
         # TODO: update to handle input fields
         driver = self.gField.GetDriver()
         newRaster = driver.CreateCopy(newGtiffPath, self.gField)
@@ -198,16 +222,7 @@ class GeoTiffField(CcField):
         newArray = np.around(newArray.astype(np.double), 3)
         outBand.WriteArray(newArray)
         outBand.FlushCache()
-        
-    def domain(self):
-        # TODO: implement
-        raise NotImplementedError("domain")
-    
-    def restrict_domain(self, geometry, operation ):
-        # TODO: implement
-        # add [geometry,operation] to self.domain_geoms
-        pass 
-    
+
     def coarsen(self, granularity, func ):
         """
         Constructs new field with lower granularity.
@@ -220,6 +235,4 @@ class GeoTiffField(CcField):
         pass
         # TODO: implement with 'aggregate' in GDAL
         # default strategy: mean
-        # http://gis.stackexchange.com/questions/110769/gdal-python-aggregate-raster-into-lower-resolution 
-        
-        
+        # http://gis.stackexchange.com/questions/110769/gdal-python-aggregate-raster-into-lower-resolution
