@@ -103,7 +103,12 @@ def clip_raster(rast, features_path, gt=None, nodata=-9999):
     geom = poly.GetGeometryRef()
     pts = geom.GetGeometryRef(0)
 
+    print "GEOM TYPE: ", type(geom)
+    print "PTS TYPE: ", type(pts)
+    print "POLY TYPE: ", type(poly)
 
+
+    assert pts.GetPointCount() == 0
 
     for p in range(pts.GetPointCount()):
         points.append((pts.GetX(p), pts.GetY(p)))

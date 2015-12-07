@@ -33,14 +33,11 @@ class ArcShpObject(CcObject):
         self.sObj = layer.GetNextFeature()
 
     def bounds( self ):
-        #Get geometery
-        geom = self.sObj.GetGeometryRef()
+        geom = self.sObj.GetGeometryRef() # Get geometery
         env = geom.GetEnvelope()
-        #Return bounds in form (MinX, MaxX, MinY, MaxY)
-        return env
-        #Return geometry
+        return env # Return bounds in form (MinX, MaxX, MinY, MaxY)
+        #return geom # TODO: return geom instead of env, because this is the actual geometry, not just the bounding box
 
-        #return geom #,geom UNCOMMENT THIS!
 
     def relation( self, obj, relType ):
         #Get geometeries

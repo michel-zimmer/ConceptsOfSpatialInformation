@@ -22,7 +22,9 @@ from gdalconst import *
 
 from utils import _init_log
 from coreconcepts import CcField
-import abc
+
+import ogr
+import osr
 
 log = _init_log("fields")
 
@@ -45,7 +47,7 @@ def getGtiffOffset( gtiff, position ):
     return arry, arrx
 
 def FieldGranularity(CcGranularity):
-    # TODO: 
+    # TODO:
     def __init__( self, x, y ):
         pass
 
@@ -74,15 +76,15 @@ class GeoTiffField(CcField):
         print 'Size is ',self.gField.RasterXSize,'x',self.gField.RasterYSize, \
               'x',self.gField.RasterCount
         print 'Projection is ',self.gField.GetProjection()
-        thing =  self.gField.ReadAsArray()
-        print thing
 
+        self.cols = self.gField.RasterXSize
+        self.rows = self.gField.RasterYSize
         self.domain_geoms = () # tuple [geometry, 'inside'|'outside']
 
     def value_at( self, position ):
         """
         Returns the value of a raster pixel at an input position.
-        
+
         @param position the coordinate pair in self's coordinate system
         @return the raw value of the pixel at input position in self or None if it is outside of the domain
         """
@@ -92,24 +94,58 @@ class GeoTiffField(CcField):
             return array
         else: return None
 
+
     def domain(self):
         # TODO: implement
         raise NotImplementedError("domain")
 
-    def restrict_domain(self, geometry, operation ): # TODO: maybe call this limit_to ? (does that seem more intuitive?)
+
+    def restrict_domain(self, geometry, operation ):
+        """
+        Restricts the domain to the specified geometry based on inside/outisde operation
+
+        @param geometry, operation
+        """
+        self.domain_geoms = [geometry.bounds(), operation] # setting to the bounding box of geometry
+
         print "IN RESTRICT DOMAIN", geometry
-        print geometry.bounds() #prints env
+        print "GEOMETRY BOUNDS", geometry.bounds() #prints env
+        print type(geometry.bounds())
+        print type(self.domain_geoms[0])
+        print "DOMAIN GEOMS", self.domain_geoms
+        print "GEO TRANSFORM", self.gField.GetGeoTransform()
+        print "SELF.COLS", self.cols
+        print "RASTER X SIZE: ",self.gField.RasterXSize
 
-        # add [geometry,operation] to self.domain_geoms
+        (upper_left_x, x_size, x_rotation, upper_left_y, y_rotation, y_size) = self.gField.GetGeoTransform()
+        x_calc = upper_left_x + (x_size / 2) # add half the cell size
+        y_calc = upper_left_y + (y_size / 2) # to centre the point
 
-        pass
+        for j in range(self.rows):     # iterate each Y value
+            for i in range(self.cols): # iterate each X value
+                coords = ( (i+1)*x_size + x_calc, (j+1)*y_size + y_calc ) # assign current cell's calculated coordinates
+                if self._is_in_domain(coords): # determine if these new coordinates are within domain_geoms
+                    #print "hi"
+                    # TODO: set self.domain_geoms; how do we add this to the domain_geoms? do we need a new variable instead?
+                    pass
+
 
     def _is_in_domain(self, position ):
         """
+        Checks if the current cell position is appropriately inside/outside domain_geoms
+
         @param position
         @return True if position is in the current domain or False otherwise
         """
-        # TODO: implement using self.domain_geoms
+        geom = self.domain_geoms[0] # retrieve geometry, first part of touple
+        inside_outside = self.domain_geoms[1] # TODO: implement so that we can use inside / outside
+
+        if position[0] > float(geom[0]) and position[0] < float(geom[1]): # if position is within X geom
+            if position[1] > float(geom[2]) and position[1] < float(geom[3]): # if position is within Y geom
+                return True
+            else: return False
+        else: return False
+
 
     def zone( self, position ):
         """
@@ -135,13 +171,13 @@ class GeoTiffField(CcField):
 
         1. For each location x, h(x) = f(x) dot g(x)" (Worboys & Duckham 148)
 
-        @param fields - other input fields 
+        @param fields - other input fields
         @param localFunc - the local function to be applied to each value in GeoTiff
         @param newGtiffPath - file path for the new GeoTiff
         @return N/A; write new raster to newGtiffPath
         """
         oldArray = self.gField.ReadAsArray()
-        newArray = localFunc(oldArray)
+        newArray = localFunc(oldArray, fields)
         # TODO: update to handle input fields
         driver = self.gField.GetDriver()
         newRaster = driver.CreateCopy(newGtiffPath, self.gField)
@@ -149,6 +185,10 @@ class GeoTiffField(CcField):
         newArray = np.around(newArray.astype(np.double), 3)
         outBand.WriteArray(newArray)
         outBand.FlushCache()
+
+    def average_fields(oldArray, fields):
+        pass
+
 
     def focal( self, fields, kernFunc, newGtiffPath ):
         """
@@ -226,7 +266,7 @@ class GeoTiffField(CcField):
     def coarsen(self, granularity, func ):
         """
         Constructs new field with lower granularity.
-        
+
         Default strategy: mean
         @param granularity a FieldGranularity
         @param aggregation strategy func
@@ -236,3 +276,105 @@ class GeoTiffField(CcField):
         # TODO: implement with 'aggregate' in GDAL
         # default strategy: mean
         # http://gis.stackexchange.com/questions/110769/gdal-python-aggregate-raster-into-lower-resolution
+
+
+
+
+# TO GET RID OF
+def GetExtent(gt,cols,rows):
+    ''' Return list of corner coordinates from a geotransform
+
+        @type gt:   C{tuple/list}
+        @param gt: geotransform
+        @type cols:   C{int}
+        @param cols: number of columns in the dataset
+        @type rows:   C{int}
+        @param rows: number of rows in the dataset
+        @rtype:    C{[float,...,float]}
+        @return:   coordinates of each corner
+    '''
+    ext=[]
+    xarr=[0,cols]
+    yarr=[0,rows]
+
+    for px in xarr:
+        for py in yarr:
+            x=gt[0]+(px*gt[1])+(py*gt[2])
+            y=gt[3]+(px*gt[4])+(py*gt[5])
+            ext.append([x,y])
+            print x,y
+        yarr.reverse()
+    return ext
+
+def ReprojectCoords(coords,src_srs,tgt_srs):
+    ''' Reproject a list of x,y coordinates.
+
+        @type geom:     C{tuple/list}
+        @param geom:    List of [[x,y],...[x,y]] coordinates
+        @type src_srs:  C{osr.SpatialReference}
+        @param src_srs: OSR SpatialReference object
+        @type tgt_srs:  C{osr.SpatialReference}
+        @param tgt_srs: OSR SpatialReference object
+        @rtype:         C{tuple/list}
+        @return:        List of transformed [[x,y],...[x,y]] coordinates
+    '''
+    trans_coords=[]
+    transform = osr.CoordinateTransformation( src_srs, tgt_srs)
+    for x,y in coords:
+        x,y,z = transform.TransformPoint(x,y)
+        trans_coords.append([x,y])
+    return trans_coords
+
+
+
+
+    ## WITHIN RESTRICT DOMAIN
+
+
+        # a = self.gField.ReadAsArray().astype(np.float)
+        # (y_index, x_index) = np.nonzero(a > threshold)
+        # (upper_left_x, x_size, x_rotation, upper_left_y, y_rotation, y_size) = self.gField.GetGeoTransform()
+        # x_coords = x_index * x_size + upper_left_x + (x_size / 2) #add half the cell size
+        # y_coords = y_index * y_size + upper_left_y + (y_size / 2) #to centre the point
+
+
+        # for row in self.gField.ReadAsArray():
+        #     for col in row:
+        #         x_pos = col * x_size + upper_left_x + (x_size / 2) #add half the cell size
+        #         y_pos = row[1] * y_size + upper_left_y + (y_size / 2) #to centre the point
+        #         coords = (x_pos,y_pos)
+        #         # print coords
+        #         self.value_at(coords)
+        #         #print "in for loop"
+        #         #print coords
+
+        # ext=GetExtent(self.geoTransform, self.cols, self.rows)
+        #
+        # src_srs=osr.SpatialReference()
+        # src_srs.ImportFromWkt(self.gField.GetProjection())
+        # tgt_srs = src_srs.CloneGeogCS()
+        #
+        # geo_ext=ReprojectCoords(ext,src_srs,tgt_srs)
+
+        # print "GEO EXTENT", geo_ext
+
+        # cols = self.gField.RasterXSize
+        # rows = self.gField.RasterYSize
+        # allBands = self.gField.RasterCount
+        # print allBands
+        #
+        # band = self.gField.ReadAsArray(0,0,cols,rows)
+        # band2 = self.gField.ReadAsArray().astype(np.float)
+        #
+        # thing = self.gField.GetGeoTransform()
+        # print "THING", thing
+
+   ## WITHIN IS_IN_DOMAIN
+        # if position[0] in range(float(geom[0]), float(geom[1])):
+        #     if position[1] in range(float(geom[2]), float(geom[3])):
+        #         print "it is"
+        #         pass
+        #         #return True
+        #     pass
+        # else:
+        #     pass

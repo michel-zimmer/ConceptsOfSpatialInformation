@@ -23,23 +23,23 @@ def part_1():
     china = ArcShpObject(file_path_4)
     print china
 
-    china_flares = ArcShpObjectSet(file_path_3)
+    china_flares = ArcShpObjectSet(file_path_3) # TODO: Determine what to do with object sets; how to implement it
     print china_flares
 
     # create fields from file path
-    china_field_a = GeoTiffField(file_path_1).restrict_domain(china, 'inside')
+    china_field_a = GeoTiffField(file_path_1)#.restrict_domain(china, 'inside')
     print china_field_a
 
-    china_field_b = GeoTiffField(file_path_2)
+    china_field_b = GeoTiffField(file_path_2)#.restrict_domain(china, 'inside')
     print china_field_b
 
-#
-#     # perform local averaging operation
-#     luminosity = china_field_a.local(china_field_b, average)
-#
-#     # remove gas flares
-#     luminosity.remove(china_flares)
-#
+
+    # perform local averaging operation
+    luminosity = china_field_a.local(china_field_b, GeoTiffField.average_fields, 'data/luminosity.tif')
+
+    # remove gas flares
+    luminosity.remove(china_flares)
+
 #     return luminosity
 #
 # # observe phenomena around roads

@@ -17,10 +17,10 @@ def calculate_luminosity():
     gas_flares = CcObject('data/china_flares.shp')
 
     # average fields
-    luminosity = china_lights_1.local(china_lights_2, average)
+    luminosity = china_lights_1.local(china_lights_2, 'average')
 
     # remove gas flares
-    luminosity.restrict_domain(gas_flares, outside)
+    luminosity.restrict_domain(gas_flares, 'outside')
 
     # create roads buffer
     roads = CcObject('data/china_roads.shp')
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     ## fields = [china_lights_1, china_lights_2]
 
     ## luminosity = average(fields, local)
-    ## luminosity.remove(gas_flares) #same as outside
+    ## luminosity.outside(gas_flares) #same as outside
 
     ## roads_buffered = CcObject('data/china_roads.shp').buffer(0.5)
     ## luminosity.inside(roads_buffered)
