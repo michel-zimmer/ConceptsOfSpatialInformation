@@ -27,7 +27,7 @@ def calculate_luminosity():
     roads_buffered = buffer(roads, 0.5)
 
     # restrict domain of luminosity to road buffer
-    luminosity_around_roads = luminosity.restrict_domain(luminosity, roads_buffered, 'inside')
+    luminosity_around_roads = luminosity.restrict_domain(roads_buffered, 'inside')
 
     # aggregate previous information
     results = luminosity_around_roads.coarsen(0.1, 0.1)
