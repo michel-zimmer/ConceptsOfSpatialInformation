@@ -16,6 +16,7 @@ __date__ = "August 2014"
 __status__ = "Development"
 
 from utils import _init_log
+import abc
 
 log = _init_log("coreconcepts")
 
@@ -48,11 +49,15 @@ class CcField(object):
     Class defining abstract field.
     Based on Field.hs
     """
+    __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
+    def __init__(self, *filepath):
         """ Define appropriate parameters for construction of the concrete object """
+        _determine_type(self, filepath)
+
         pass
 
+    @abc.abstractmethod
     def value_at( self, position ):
         """ 
         @return the value of field at position, or None if it is outside of the domain.
@@ -65,11 +70,18 @@ class CcField(object):
         """
         raise NotImplementedError("domain")
     
-    def restrict_domain(self, geometry ):
+    def restrict_domain(self, geometry, operation ):
         """ 
         @param domain a domain to be subtracted to the current domain  
         """
         raise NotImplementedError("restrict_domain")
+
+    def _is_in_domain(self, position ):
+            """
+            @param position
+            @return True if position is in the current domain or False otherwise
+            """
+            # TODO: implement using self.domain_geoms
 
     def rect_neigh( self, position, width, height ):
         """
@@ -109,9 +121,14 @@ class CcField(object):
 
 class CcObject(object):
     """
-    Abstract class for core concept 'object'
+    Class defining abstract object.
     Based on Object.hs
     """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, filepath):
+        """ Define appropriate parameters for construction of the concrete object """
+        pass
 
     def bounds( self ):
         raise NotImplementedError("bounds")
@@ -149,7 +166,6 @@ class CcObjectSet(object):
     
     def remove(self, obj):
         self.obj_set.remove(obj)
-        
 
 class CcNetwork(object):
     """

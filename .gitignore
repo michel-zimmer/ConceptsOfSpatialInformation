@@ -5,3 +5,25 @@ org.eclipse.core.resources.prefs
 **/*.sublime-workspace
 
 **/Thumbs.db
+
+CoreConceptsPy/examples/china_lights/data/a2010_final_proj.dbf
+
+.idea/.name
+
+*.iml
+
+*.xml
+
+*.prj
+
+*.shp
+
+*.shx
+
+*.dbf
+
+*.sbn
+
+*.sbx
+
+*.tif

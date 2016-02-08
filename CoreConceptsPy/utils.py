@@ -15,6 +15,7 @@ __status__ = "Development"
 import logging
 import math
 import re
+import numpy as np
 
 def _init_log(module_name):
     assert module_name
@@ -156,3 +157,15 @@ def float_eq( a, b, err=1e-08):
     @return boolean
     """
     return abs(a - b) <= err
+
+def _determine_type(self, filepath):
+    if filepath.endswith('.tiff'):
+        GeoTiffField(self, filepath) #create a new GeoTiffField object
+
+def _determine_object_index(num_features):
+    if num_features == 1: # Creating an object from one feature
+        return 0
+    elif num_features > 1: # creating an object set from multiple features
+        return np.arrange(num_features)
+
+    pass
