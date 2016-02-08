@@ -49,7 +49,7 @@ if __name__ == '__main__':
     ## fields = [china_lights_1, china_lights_2]
 
     ## luminosity = average(fields, local)
-    ## luminosity.outside(gas_flares) #same as outside
+    ## luminosity.outside(gas_flares) #same as inside
 
     ## roads_buffered = make_object('data/china_roads.shp').buffer(0.5)
     ## luminosity.inside(roads_buffered)
