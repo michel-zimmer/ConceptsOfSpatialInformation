@@ -39,18 +39,18 @@ if __name__ == '__main__':
     main()
 
 
-    ##### --> THOMAS' IDEAL FINAL IMPLEMENTATION
+    #### --> thomas' eventual implementation
 
-    ## china          = CcObject('data/china.shp')
-    ## gas_flares     = CcObject('data/china_flares.shp')
-    ## china_lights_1 = CcField('data/lights_1994a.tif').inside(china)
-    ## china_lights_2 = CcField('data/lights_1994b.tif').inside(china)
+    ## china          = make_object('data/china.shp')
+    ## gas_flares     = make_object('data/china_flares.shp')
+    ## china_lights_1 = make_field('data/lights_1994a.tif').inside(china)
+    ## china_lights_2 = make_field('data/lights_1994b.tif').inside(china)
 
     ## fields = [china_lights_1, china_lights_2]
 
     ## luminosity = average(fields, local)
     ## luminosity.outside(gas_flares) #same as outside
 
-    ## roads_buffered = CcObject('data/china_roads.shp').buffer(0.5)
+    ## roads_buffered = make_object('data/china_roads.shp').buffer(0.5)
     ## luminosity.inside(roads_buffered)
     ## luminosity.aggregate(5)
