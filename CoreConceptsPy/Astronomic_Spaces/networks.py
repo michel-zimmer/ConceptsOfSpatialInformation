@@ -59,7 +59,8 @@ class AstroNetwork(AstroObject, CcNetwork):
 
     def __init__(self, identity, **attr):
         """
-        A network as an object, but also a graph of objects
+        A network is an object, but also a graph of objects
+        In this way, hierarchical networks are possible 
         Does that make sense?
         :param identity: The identity of this network
         :param attr: Additional information
@@ -121,7 +122,7 @@ class AstroNetwork(AstroObject, CcNetwork):
         Must be a tuple of weight attribute name and value
         :param color: Only nodes with this quality will be used
         must be a tuple of color attribute name and value
-        :return: 
+        :return: The shortest path in the graph
         """
 
         if source not in self.graph or target not in self.graph:

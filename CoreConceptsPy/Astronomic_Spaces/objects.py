@@ -1,5 +1,5 @@
 """
-Implementation of the coreconecpt 'Object' as written in coreconcepts.py
+Implementation of the coreconcept 'Object' as written in coreconcepts.py
 :author: Fenja Kollasch, 06/2017
 """
 

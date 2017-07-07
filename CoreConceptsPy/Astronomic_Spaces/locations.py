@@ -240,8 +240,11 @@ class CartesianCoord(CcLocation):
                 z = args.pop('z')
                 origin = args.pop('origin')
                 if origin in REFPOINTS:
+                    # Coordinate is noted relative to a common reference point
                     self.__coord = SkyCoord(x, y, z, representation='cartesian', frame=REFPOINTS[origin], **args)
                 else:
+                    # Coordinate is noted relative to another 3d spot in the Universe.
+                    # Use its reference frame to save this position as a SkyCoord
                     self.__coord = SkyCoord(x - self.origin.__coord.x, y - self.origin.__coord.y,
                                             z - self.origin.__coord.z, frame=origin.__coord.frame,
                                             representation='cartesian', **args)
@@ -337,6 +340,9 @@ class Distance(CcLocation):
     def __init__(self, distance, reference, **args):
         """
         A location described by the distance to a reference object
+        :param distance: The distance to the reference in parsec
+        :param reference: The reference object
+        :param args: Additional arguments
         """
         self.representation = 'distance'
         self.distance = distance

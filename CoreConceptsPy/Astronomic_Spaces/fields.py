@@ -75,10 +75,12 @@ class AstroField(CcField):
         return AstroField(lambda x: fun(self.__interpol(x)), self.__domain)
 
     def focal(self, fun):
+        # Todo Intepolation function is not quite right
         new_data = {key: fun(self.neighborhood(key), key) for key in self.__data}
         return AstroField(new_data, lambda d, p: fun(self.neighborhood(p)))
 
     def zonal(self, fun, zone_attr=None):
+        # Todo Intepolation function is not quite right
         new_data = {key: fun(self.zone(key, zone_attr), key) for key in self.__data}
         return AstroField(new_data, lambda d, p: fun(self.zone(p, zone_attr)))
 

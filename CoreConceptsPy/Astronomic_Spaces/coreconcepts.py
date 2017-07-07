@@ -15,10 +15,6 @@ __email__ = ""
 __date__ = "August 2014"
 __status__ = "Development"
 
-from utils import _init_log
-
-log = _init_log("coreconcepts")
-
 
 class CcLocation(object):
     """
