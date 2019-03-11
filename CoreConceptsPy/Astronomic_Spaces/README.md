@@ -10,6 +10,7 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 $ python3 sn2011fe.py
 ```
+To deactivate the virtual environment, run `deactivate`
 
 ## Additional info
 The *tests* folder is deprecated.
