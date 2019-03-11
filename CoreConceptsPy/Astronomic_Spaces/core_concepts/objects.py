@@ -4,9 +4,9 @@ Implementation of the coreconcept 'Object' as written in coreconcepts.py
 """
 
 
-from coreconcepts import CcObject
-from coreconcepts import CcObjectSet
-import locations as l
+from core_concepts.coreconcepts import CcObject
+from core_concepts.coreconcepts import CcObjectSet
+import core_concepts.locations as l
 import math
 
 

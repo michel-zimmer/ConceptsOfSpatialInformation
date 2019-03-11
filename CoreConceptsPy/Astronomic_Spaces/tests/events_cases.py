@@ -1,9 +1,11 @@
-from events import AstroEvent
-from events import AstroTime
-from objects import AstroObject
-from networks import AstroNetwork
-from fields import AstroField
-from locations import Distance
+import sys
+sys.path.append('../')
+from core_concepts.events import AstroEvent
+from core_concepts.events import AstroTime
+from core_concepts.objects import AstroObject
+from core_concepts.networks import AstroNetwork
+from core_concepts.fields import AstroField
+from core_concepts.locations import Distance
 
 """
 Case study: The impacts of Supernova 2011fe

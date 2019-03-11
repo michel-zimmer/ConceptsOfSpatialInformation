@@ -2,8 +2,8 @@
 These components implement the core concept 'Field' as defined in coreconcepts.py
 :author: Fenja Kollasch, 06/2017
 """
-from coreconcepts import CcField
-from locations import AstroExtent
+from core_concepts.coreconcepts import CcField
+from core_concepts.locations import AstroExtent
 
 
 class AstroField(CcField):
@@ -48,11 +48,8 @@ class AstroField(CcField):
         self.__mask = dict()
 
     def neighborhood(self, position):
-        neighbors = []
-        for key in self.__data:
-            if position.is_neighbor(key):
-                neighbors.append(key)
-        return AstroExtent(position, neighbors)
+        # Todo: Use KNN to get the neighbors
+        raise NotImplementedError("neighborhood")
 
     def zone(self, position, zone_attr=None):
         zone = []

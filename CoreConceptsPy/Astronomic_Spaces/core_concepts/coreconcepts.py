@@ -53,14 +53,6 @@ class CcLocation(object):
         """
         raise NotImplementedError("is_part")
 
-    def is_neighbor(self, ground):
-        """
-        Are these two locations part of the same neighborhood?
-        :param ground: 
-        :return: 
-        """
-        raise NotImplementedError("is_neighbor")
-
 
 class CcField(object):
     """

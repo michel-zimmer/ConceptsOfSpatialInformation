@@ -5,8 +5,10 @@ Data taken from the Vizier Sky catalogues
 """
 
 import csv
-from objects import AstroObject
-from objects import AstroObjectSet
+import sys
+sys.path.append('../')
+from core_concepts.objects import AstroObject
+from core_concepts.objects import AstroObjectSet
 
 
 # Model a cepheid as a specific AstroObject:

@@ -4,15 +4,15 @@ We model this event and all participants with the core concepts and ask spatial 
 Every content concept is included
 
 :author: Fenja Kollasch
-:date: June 2017
+:date: June 2017 - February 2018
 """
-from objects import AstroObject
-from networks import AstroNetwork
-from fields import AstroField
-from events import AstroEvent
-from events import AstroTime
-from locations import SphericalCoord
-from locations import Distance
+from core_concepts.objects import AstroObject
+from core_concepts.networks import AstroNetwork
+from core_concepts.fields import AstroField
+from core_concepts.events import AstroEvent
+from core_concepts.events import AstroTime
+from core_concepts.locations import SphericalCoord
+from core_concepts.locations import Distance
 
 ###########################################################################################
 # The big dipper as the constellation in which the sn happened. Modeled as a network      #
@@ -50,8 +50,8 @@ companion = AstroObject("2011fe Companion")
 white_dwarf_system.addNodes([dwarf, companion])
 white_dwarf_system.addEdge(companion, dwarf, relation="feeding")
 
-# Pinwheel galaxy (containing the white dwarf system
-m101 = AstroObject("Pinwheel Galaxy", distance=6400000, bounding='extend',
+# Pinwheel galaxy (containing the white dwarf system)
+m101 = AstroObject("Pinwheel Galaxy M101", distance=6400000, bounding='extend',
                    reference=SphericalCoord(lon=210.8025, lat=54.349, frame='icrs'),
                    members=[white_dwarf_system.bounds()])
 
@@ -89,8 +89,10 @@ class SnIa(AstroEvent):
         field.domain = Distance((t ** (10 / 13) * 10), self.progenitor.bounds())
         return field
 
+
 # Instance of the event
 sn = SnIa("SN 2011fe", AstroTime(55796.687, 2400000, 'jd'), white_dwarf_system, radio_emission)
+
 
 ###########################################################################################
 # Now ask spatial questions about the event and its participants                          #

@@ -3,8 +3,8 @@ These components implement the core concept 'network as defined in coreconcepts.
 :author: Fenja Kollasch, 06/2017
 """
 
-from coreconcepts import CcNetwork
-from objects import AstroObject
+from core_concepts.coreconcepts import CcNetwork
+from core_concepts.objects import AstroObject
 import copy
 import sys
 

@@ -3,7 +3,7 @@ An implementation for the core concept location for astronomic spaces
 :author: Fenja Kollasch, 06/2017
 """
 
-from coreconcepts import CcLocation
+from core_concepts.coreconcepts import CcLocation
 from astropy.coordinates import SkyCoord
 from astropy.coordinates import EarthLocation
 from astropy.coordinates import ICRS
@@ -121,10 +121,10 @@ class SphericalCoord(CcLocation):
         try:
             distance = args.pop('distance', distance_to_refpoint(self, CRS.get_by_sys(frame).anchor))
             return SkyCoord(((lon + 360) % 360) * u.deg, lat * u.deg, frame=frame,
-                            representation="spherical", distance=distance * u.pc, **args)
+                            representation_type="spherical", distance=distance * u.pc, **args)
         except ValueError:
             return SkyCoord(((lon + 360) % 360) * u.deg, lat * u.deg, frame=frame,
-                            representation="unitspherical")
+                            representation_type="unitspherical")
 
     def __create_horizontal(self, lon, lat, **args):
         if not self.__observer or not self.__time:
@@ -161,12 +161,6 @@ class SphericalCoord(CcLocation):
     def is_part(self, ground):
         try:
             return self in ground.members
-        except AttributeError:
-            return False
-
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
         except AttributeError:
             return False
 
@@ -305,12 +299,6 @@ class CartesianCoord(CcLocation):
         except AttributeError:
             return False
 
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
-        except AttributeError:
-            return False
-
     def change_origin(self, origin):
         if origin in REFPOINTS:
             self.__coord.transform_to(REFPOINTS[origin])
@@ -411,12 +399,6 @@ class Distance(CcLocation):
         except AttributeError:
             raise LocationError("Can't make an extend from this distance. There are no coordinates for the footprint.")
 
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
-        except AttributeError:
-            return False
-
     def translate_to_spherical(self):
         try:
             return SphericalCoord(**self.__args)
@@ -477,12 +459,6 @@ class AstroExtent(CcLocation):
     def is_part(self, ground):
         try:
             return self in ground.members
-        except AttributeError:
-            return False
-
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
         except AttributeError:
             return False
 
