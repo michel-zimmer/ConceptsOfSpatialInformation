@@ -4,9 +4,13 @@ The concepts can be found in the *core_concepts* folder. In the root directory, 
 
 ## Installation guide
 To get all dependencies and run the case example, please execute
+
 `$ python3 -m venv venv`
+
 `$ source venv/bin/activate`
+
 `$ pip install -r requirements.txt`
+
 `$ python3 sn2011fe.py`
 
 ## Additional info
