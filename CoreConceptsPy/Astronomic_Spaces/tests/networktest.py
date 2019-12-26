@@ -4,8 +4,8 @@ Tests for network implementation
 """
 import sys
 sys.path.append('../')
-import networks as n
-import objects as o
+import core_concepts.networks as n
+import core_concepts.objects as o
 
 # Model the big dipper as unordered graph... because you can observe a constellation only from left to right... or so
 big_dipper = n.AstroNetwork("big dipper")

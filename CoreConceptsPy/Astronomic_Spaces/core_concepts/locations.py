@@ -3,7 +3,7 @@ An implementation for the core concept location for astronomic spaces
 :author: Fenja Kollasch, 06/2017
 """
 
-from coreconcepts import CcLocation
+from core_concepts.coreconcepts import CcLocation
 from astropy.coordinates import SkyCoord
 from astropy.coordinates import EarthLocation
 from astropy.coordinates import ICRS
@@ -121,10 +121,10 @@ class SphericalCoord(CcLocation):
         try:
             distance = args.pop('distance', distance_to_refpoint(self, CRS.get_by_sys(frame).anchor))
             return SkyCoord(((lon + 360) % 360) * u.deg, lat * u.deg, frame=frame,
-                            representation="spherical", distance=distance * u.pc, **args)
+                            representation_type="spherical", distance=distance * u.pc, **args)
         except ValueError:
             return SkyCoord(((lon + 360) % 360) * u.deg, lat * u.deg, frame=frame,
-                            representation="unitspherical")
+                            representation_type="unitspherical")
 
     def __create_horizontal(self, lon, lat, **args):
         if not self.__observer or not self.__time:
@@ -161,12 +161,6 @@ class SphericalCoord(CcLocation):
     def is_part(self, ground):
         try:
             return self in ground.members
-        except AttributeError:
-            return False
-
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
         except AttributeError:
             return False
 
@@ -240,8 +234,11 @@ class CartesianCoord(CcLocation):
                 z = args.pop('z')
                 origin = args.pop('origin')
                 if origin in REFPOINTS:
+                    # Coordinate is noted relative to a common reference point
                     self.__coord = SkyCoord(x, y, z, representation='cartesian', frame=REFPOINTS[origin], **args)
                 else:
+                    # Coordinate is noted relative to another 3d spot in the Universe.
+                    # Use its reference frame to save this position as a SkyCoord
                     self.__coord = SkyCoord(x - self.origin.__coord.x, y - self.origin.__coord.y,
                                             z - self.origin.__coord.z, frame=origin.__coord.frame,
                                             representation='cartesian', **args)
@@ -302,12 +299,6 @@ class CartesianCoord(CcLocation):
         except AttributeError:
             return False
 
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
-        except AttributeError:
-            return False
-
     def change_origin(self, origin):
         if origin in REFPOINTS:
             self.__coord.transform_to(REFPOINTS[origin])
@@ -337,6 +328,9 @@ class Distance(CcLocation):
     def __init__(self, distance, reference, **args):
         """
         A location described by the distance to a reference object
+        :param distance: The distance to the reference in parsec
+        :param reference: The reference object
+        :param args: Additional arguments
         """
         self.representation = 'distance'
         self.distance = distance
@@ -405,12 +399,6 @@ class Distance(CcLocation):
         except AttributeError:
             raise LocationError("Can't make an extend from this distance. There are no coordinates for the footprint.")
 
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
-        except AttributeError:
-            return False
-
     def translate_to_spherical(self):
         try:
             return SphericalCoord(**self.__args)
@@ -471,12 +459,6 @@ class AstroExtent(CcLocation):
     def is_part(self, ground):
         try:
             return self in ground.members
-        except AttributeError:
-            return False
-
-    def is_neighbor(self, ground):
-        try:
-            return self.neighborhood == ground.neighborhood
         except AttributeError:
             return False
 

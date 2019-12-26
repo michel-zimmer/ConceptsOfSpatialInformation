@@ -6,7 +6,7 @@ No serious data yet (copied from Wikipedia)
 """
 import sys
 sys.path.append('../')
-import locations as l
+import core_concepts.locations as l
 
 # Case 1: Where is Bellatrix seen from Sirius? Where is Bellatrix seen from Sirius in regard of the earth?
 print("Where is Bellatrix seen from Sirius? Where is Bellatrix seen from Sirius in regard of the earth?")

@@ -15,10 +15,6 @@ __email__ = ""
 __date__ = "August 2014"
 __status__ = "Development"
 
-from utils import _init_log
-
-log = _init_log("coreconcepts")
-
 
 class CcLocation(object):
     """
@@ -56,14 +52,6 @@ class CcLocation(object):
         :return: 
         """
         raise NotImplementedError("is_part")
-
-    def is_neighbor(self, ground):
-        """
-        Are these two locations part of the same neighborhood?
-        :param ground: 
-        :return: 
-        """
-        raise NotImplementedError("is_neighbor")
 
 
 class CcField(object):

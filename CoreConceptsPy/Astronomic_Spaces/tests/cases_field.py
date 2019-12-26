@@ -6,8 +6,10 @@ http://cdsarc.u-strasbg.fr/viz-bin/Cat?J/A%2bA/275/67
 """
 import csv
 import math as m
-from fields import AstroField
-from locations import Distance
+import sys
+sys.path.append('../')
+from core_concepts.fields import AstroField
+from core_concepts.locations import Distance
 
 # Parse data file
 velo_map = dict()

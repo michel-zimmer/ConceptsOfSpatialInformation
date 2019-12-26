@@ -3,7 +3,7 @@ An implementation of the core concept event for astronomic spaces
 :author: Fenja Kollasch, 06/2017
 """
 
-from coreconcepts import CcEvent
+from core_concepts.coreconcepts import CcEvent
 from astropy.time import Time
 
 
